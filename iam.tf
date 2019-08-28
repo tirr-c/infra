@@ -81,6 +81,25 @@ data "aws_iam_policy" "secrets_read_write" {
   arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
 }
 
+resource "aws_iam_policy" "rds_connect" {
+  name = "rds-connect"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "rds-db:connect"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_iam_role" "lambda" {
   name               = "lambda"
   assume_role_policy = <<EOF
@@ -108,6 +127,11 @@ resource "aws_iam_role_policy_attachment" "lambda_vpc" {
 resource "aws_iam_role_policy_attachment" "lambda_secrets_read_write" {
   role       = aws_iam_role.lambda.name
   policy_arn = data.aws_iam_policy.secrets_read_write.arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_rds_connect" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = aws_iam_policy.rds_connect.arn
 }
 
 locals {
