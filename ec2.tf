@@ -13,16 +13,6 @@ resource "aws_ebs_volume" "lydie" {
   }
 }
 
-resource "aws_ebs_volume" "sigmund" {
-  availability_zone = "ap-northeast-1d"
-  size              = 32
-  type              = "gp2"
-
-  tags = {
-    Name = "sigmund"
-  }
-}
-
 resource "aws_ebs_volume" "docker" {
   availability_zone = "ap-northeast-1a"
   size              = 16
@@ -79,11 +69,6 @@ resource "aws_security_group" "lydie" {
   description = "Lydie"
 }
 
-resource "aws_security_group" "sigmund" {
-  name        = "sigmund"
-  description = "The Ducks"
-}
-
 resource "aws_security_group_rule" "lydie_ingress" {
   for_each = {
     http = {
@@ -134,76 +119,7 @@ resource "aws_security_group_rule" "lydie_egress" {
   protocol         = "-1"
 }
 
-resource "aws_security_group_rule" "sigmund_ingress" {
-  for_each = {
-    http = {
-      from_port = 80,
-      to_port   = 80,
-      protocol  = "tcp",
-    },
-    https = {
-      from_port = 443,
-      to_port   = 443,
-      protocol  = "tcp",
-    },
-    ssh = {
-      from_port = 22,
-      to_port   = 22,
-      protocol  = "tcp",
-    },
-    mosh = {
-      from_port = 60000,
-      to_port   = 61000,
-      protocol  = "udp",
-    },
-  }
-
-  security_group_id = aws_security_group.sigmund.id
-
-  type             = "ingress"
-  cidr_blocks      = ["0.0.0.0/0"]
-  ipv6_cidr_blocks = ["::/0"]
-  from_port        = each.value.from_port
-  to_port          = each.value.to_port
-  protocol         = each.value.protocol
-}
-
-resource "aws_security_group_rule" "sigmund_egress" {
-  security_group_id = aws_security_group.sigmund.id
-
-  type             = "egress"
-  cidr_blocks      = ["0.0.0.0/0"]
-  ipv6_cidr_blocks = ["::/0"]
-  from_port        = 0
-  to_port          = 0
-  protocol         = "-1"
-}
-
-resource "aws_instance" "sigmund" {
-  ami           = "ami-0c4290d7ce45d7bbe"
-  instance_type = "t3.small"
-
-  availability_zone = "ap-northeast-1d"
-  key_name          = aws_key_pair.sophie.key_name
-  security_groups   = [aws_security_group.sigmund.name]
-
-  tags = {
-    Name = "sigmund"
-  }
-}
-
-resource "aws_volume_attachment" "sigmund_root" {
-  device_name = "xvda"
-  instance_id = aws_instance.sigmund.id
-  volume_id   = aws_ebs_volume.sigmund.id
-}
-
 resource "aws_eip" "lydie" {
   instance = aws_instance.lydie.id
-  vpc      = true
-}
-
-resource "aws_eip" "sigmund" {
-  instance = aws_instance.sigmund.id
   vpc      = true
 }
