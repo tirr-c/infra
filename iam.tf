@@ -52,25 +52,62 @@ data "aws_iam_policy" "fleet" {
 resource "aws_iam_role" "fleet" {
   name               = "aws-ec2-spot-fleet-tagging-role"
   assume_role_policy = <<EOF
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Sid": "",
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "spotfleet.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
-      }
-    ]
-  }
-  EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "spotfleet.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
 }
 
 resource "aws_iam_role_policy_attachment" "fleet" {
   role       = aws_iam_role.fleet.name
   policy_arn = data.aws_iam_policy.fleet.arn
+}
+
+data "aws_iam_policy" "lambda_vpc" {
+  arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+data "aws_iam_policy" "secrets_read_write" {
+  arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+}
+
+resource "aws_iam_role" "lambda" {
+  name               = "lambda"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_vpc" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = data.aws_iam_policy.lambda_vpc.arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_secrets_read_write" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = data.aws_iam_policy.secrets_read_write.arn
 }
 
 locals {
