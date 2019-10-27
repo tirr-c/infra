@@ -134,6 +134,35 @@ resource "aws_iam_role_policy_attachment" "lambda_rds_connect" {
   policy_arn = aws_iam_policy.rds_connect.arn
 }
 
+resource "aws_iam_role" "lydie" {
+  name               = "lydie"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lydie_rds_connect" {
+  role       = aws_iam_role.lydie.name
+  policy_arn = aws_iam_policy.rds_connect.arn
+}
+
+resource "aws_iam_instance_profile" "lydie" {
+  name = "lydie"
+  role = aws_iam_role.lydie.name
+}
+
 locals {
   encrypted_service_access_key = {
     for key in aws_iam_access_key.services :
