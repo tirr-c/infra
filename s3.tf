@@ -74,43 +74,6 @@ resource "aws_s3_bucket" "the_ducks_discourse_backup" {
   }
 }
 
-resource "aws_cloudfront_distribution" "ames_static" {
-  origin {
-    domain_name = aws_s3_bucket.web_us_east_1["ames-static.tirr.dev"].bucket_domain_name
-    origin_id   = "S3-ames-static.tirr.dev"
-  }
-
-  enabled         = true
-  is_ipv6_enabled = true
-  http_version    = "http2"
-  aliases         = ["ames-static.tirr.dev"]
-
-  default_cache_behavior {
-    allowed_methods = ["GET", "HEAD"]
-    cached_methods  = ["GET", "HEAD"]
-    forwarded_values {
-      cookies {
-        forward = "none"
-      }
-      query_string = false
-    }
-    target_origin_id       = "S3-ames-static.tirr.dev"
-    viewer_protocol_policy = "https-only"
-  }
-
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
-    }
-  }
-
-  viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate.ames_static.arn
-    minimum_protocol_version = "TLSv1.1_2016"
-    ssl_support_method       = "sni-only"
-  }
-}
-
 resource "aws_cloudfront_distribution" "the_ducks_uploads" {
   origin {
     domain_name = aws_s3_bucket.the_ducks_uploads.bucket_domain_name
