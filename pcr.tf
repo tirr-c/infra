@@ -14,6 +14,7 @@ resource "aws_iam_policy" "pcr_s3" {
         "s3:List*",
         "s3:Get*",
         "s3:AbortMultipartUpload",
+        "s3:HeadObject",
         "s3:DeleteObject",
         "s3:PutObject",
         "s3:PutObjectAcl",
