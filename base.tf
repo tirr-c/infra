@@ -1,22 +1,25 @@
 provider "aws" {
-  version = "~> 2.23"
-  region  = "ap-northeast-1"
+  region = "ap-northeast-1"
 }
 
 provider "aws" {
-  version = "~> 2.23"
-  region  = "us-east-1"
-  alias   = "us_east_1"
+  region = "us-east-1"
+  alias  = "us_east_1"
 }
 
 provider "aws" {
-  version = "~> 2.23"
-  region  = "us-west-2"
-  alias   = "us_west_2"
+  region = "us-west-2"
+  alias  = "us_west_2"
 }
 
 terraform {
-  required_version = "~> 0.12.6"
+  required_providers {
+    aws = {
+      source = "-/aws"
+      version = "~> 2.70.0"
+    }
+  }
+  required_version = "~> 0.13.3"
 
   backend "remote" {
     organization = "tirr-c"
