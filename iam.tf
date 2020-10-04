@@ -3,6 +3,8 @@ locals {
     ["pcr", "PCR"],
     ["azure-pipelines-pcr", "PCR Azure Pipelines"],
     ["the-ducks", "The Ducks"],
+    ["sol", "Sol"],
+    ["pcr-farming-optimizer", "PCR Farming Optimier - GitHub Actions"],
   ]
   admin            = ["tirr", "Wonwoo Choi"]
   keybase_username = "vbchunguk"

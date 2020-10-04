@@ -1,5 +1,5 @@
 locals {
-  pcr_services = ["pcr", "azure-pipelines-pcr"]
+  pcr_services = ["pcr", "azure-pipelines-pcr", "pcr-farming-optimizer"]
 }
 
 resource "aws_iam_policy" "pcr_s3" {
