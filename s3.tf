@@ -10,11 +10,10 @@ locals {
 }
 
 resource "aws_s3_bucket" "web_us_east_1" {
-  provider = aws.us_east_1
+  provider = aws.us-east-1
   for_each = toset(local.web_buckets_us_east_1)
 
   bucket = each.key
-  region = "us-east-1"
   acl    = "public-read"
 
   website {
@@ -23,11 +22,10 @@ resource "aws_s3_bucket" "web_us_east_1" {
 }
 
 resource "aws_s3_bucket" "web_us_west_2" {
-  provider = aws.us_west_2
+  provider = aws.us-west-2
   for_each = toset(local.web_buckets_us_west_2)
 
   bucket = each.key
-  region = "us-west-2"
   acl    = "public-read"
 
   website {
@@ -37,7 +35,6 @@ resource "aws_s3_bucket" "web_us_west_2" {
 
 resource "aws_s3_bucket" "the_ducks_uploads" {
   bucket = "the-ducks-uploads"
-  region = "ap-northeast-1"
   acl    = "public-read"
 
   lifecycle_rule {
@@ -56,7 +53,6 @@ resource "aws_s3_bucket" "the_ducks_uploads" {
 
 resource "aws_s3_bucket" "the_ducks_discourse_backup" {
   bucket = "the-ducks-discourse-backup"
-  region = "ap-northeast-1"
   acl    = "private"
 
   lifecycle_rule {
